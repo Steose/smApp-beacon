@@ -150,6 +150,50 @@ Name              Tier    Instances
 asp-clo25-steven  B1      3
 ```
 
+## Health check
+
+### 1. Slå på health check
+
+Två vägar -  
+
+1. Portalen.
+in App Service -> Monitoring i vänstermenyn -> Health check -> slå på Enable, ange sökvägen /health, och klicka Save
+
+2. Terminalen
+
+```bash
+az webapp config set \
+  --resource-group rg-clo25-steven \
+  --name app-clo25-steven \
+  --generic-configurations health_check_path="/health"
+```
+
+### Att Kontrollera
+```bash
+az webapp show \
+  --resource-group rg-clo25-steven \
+  --name app-clo25-steven \
+  --query siteConfig.healthCheckPath \
+  --output tsv
+```
+
+Svar: ```health```
+
+### Riv
+
+```bash
+az group delete \
+  --name rg-clo25-namn \
+  --yes \
+  --no-wait
+```
+
+### Kontrollera att den är borta
+
+```bash
+az group exists --name rg-clo25-namn
+```
+
 ## Beslut jag tagit
 
 Jag valde att bygga Beacon eftersom en enkel tjänst för att övervaka en applikations status passar bra för att lära sig hur skalbara molnapplikationer fungerar. Idén gör det möjligt att börja med tydliga endpoints för hälso- och systeminformation och sedan bygga vidare med fler funktioner under kursens gång.
