@@ -194,7 +194,7 @@ az group delete \
 az group exists --name rg-clo25-namn
 ```
 
-### Att Driftsätta som Scipt
+### Att Driftsätta som Script fil
 
 ```bash
 infra/deploy_beacon.sh
