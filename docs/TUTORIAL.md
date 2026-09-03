@@ -197,7 +197,7 @@ az group exists --name rg-clo25-namn
 ### Att Driftsätta som Script fil
 
 ```bash
-infra/deploy_beacon.sh
+scripts/provision.sh
 ```
 
 ## Beslut jag tagit
