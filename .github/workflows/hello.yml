@@ -10,6 +10,7 @@ jobs:
         run: echo "Hello from a runner!"
 
   test:
+    needs: say-hello
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
