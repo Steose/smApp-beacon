@@ -10,8 +10,8 @@ on:
 
 env:
   # PLATSHÅLLARE - byt 1 och 2 här. 3 finns längre ned i filen
-  AZURE_WEBAPP_NAME: app-clo25-namn                        # <- 1. Name
-  AZURE_WEBAPP_HOSTNAME: app-clo25-namn.azurewebsites.net  # <- 2. Address
+  AZURE_WEBAPP_NAME: app-clo25-steven                        # <- 1. Name
+  AZURE_WEBAPP_HOSTNAME: app-clo25-steven.azurewebsites.net  # <- 2. Address
   DOTNET_VERSION: '10.0.x'
 
 jobs:
