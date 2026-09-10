@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+infra/*.json
+publish-profile.xml
+*.publishsettings
