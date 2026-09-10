@@ -200,6 +200,28 @@ az group exists --name rg-clo25-namn
 scripts/provision.sh
 ```
 
+# 1. Slå på basic auth igen. Utan den blir profilen i steg 2 värdelös.
+az resource update \
+  --resource-group rg-clo25-namn \
+  --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies \
+  --name scm \
+  --parent sites/app-clo25-namn \
+  --set properties.allow=true
+
+# 2. Hämta den nya appens profil till en fil.
+az webapp deployment list-publishing-profiles \
+  --name app-clo25-namn \
+  --resource-group rg-clo25-namn \
+  --xml > publish-profile.xml
+
+# 3. Skicka upp filens innehåll som secret hos GitHub.
+gh secret set AZURE_WEBAPP_PUBLISH_PROFILE < publish-profile.xml
+
+# 4. Radera den lokala kopian. Glöm inte den här.
+rm publish-profile.xml
+
+
 ## Beslut jag tagit
 
 Jag valde att bygga Beacon eftersom en enkel tjänst för att övervaka en applikations status passar bra för att lära sig hur skalbara molnapplikationer fungerar. Idén gör det möjligt att börja med tydliga endpoints för hälso- och systeminformation och sedan bygga vidare med fler funktioner under kursens gång.
