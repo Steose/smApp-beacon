@@ -221,6 +221,130 @@ gh secret set AZURE_WEBAPP_PUBLISH_PROFILE < publish-profile.xml
 # 4. Radera den lokala kopian. Glöm inte den här.
 rm publish-profile.xml
 
+## GitHub Actions: skapa `AZURE_CREDENTIALS`
+
+Workflowets `infra`-jobb loggar in i Azure med:
+
+```yaml
+- name: Sign in to Azure
+  uses: azure/login@v3
+  with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
+```
+
+Om GitHub Actions visar följande fel saknas hemligheten eller har fel innehåll:
+
+```text
+Using auth-type: SERVICE_PRINCIPAL. Not all values are present.
+Ensure 'client-id' and 'tenant-id' are supplied.
+```
+
+`AZURE_CREDENTIALS` måste innehålla ett komplett JSON-objekt med `clientId`, `clientSecret`, `subscriptionId` och `tenantId` för en Azure service principal.
+
+### 1. Kontrollera Azure- och GitHub-inloggningen
+
+Kör kommandona från repots rotmapp:
+
+```bash
+az login
+az account show --output table
+gh auth status
+```
+
+Kontrollera att rätt Azure-prenumeration är aktiv. Byt vid behov:
+
+```bash
+az account set --subscription "DIN-PRENUMERATION"
+```
+
+### 2. Hämta prenumerationens ID
+
+```bash
+BEACON_SUBSCRIPTION_ID="$(az account show --query id --output tsv)"
+echo "$BEACON_SUBSCRIPTION_ID"
+```
+
+Resultatet ska vara ett UUID. Lägg aldrig citattecken eller exempelvärden i GitHub-hemligheten.
+
+### 3. Skapa service principalen och GitHub-hemligheten
+
+Workflowet kan skapa den borttagna resursgruppen och behöver därför behörighet på prenumerationsnivå. Följande kommando skapar en service principal med rollen `Contributor` och skickar dess JSON direkt till GitHub:
+
+```bash
+az ad sp create-for-rbac \
+  --name sp-beacon-github-steven \
+  --role Contributor \
+  --scopes "/subscriptions/$BEACON_SUBSCRIPTION_ID" \
+  --json-auth \
+  | gh secret set AZURE_CREDENTIALS
+```
+
+Credential-värdet skickas genom pipen och behöver därför inte sparas i en lokal fil. Visa eller dela aldrig värdet. Om kommandot ger ett behörighetsfel behöver en Azure-administratör eller lärare skapa identiteten och rolltilldelningen.
+
+### 4. Kontrollera GitHub-hemligheten
+
+```bash
+gh secret list
+```
+
+Listan ska innehålla:
+
+```text
+AZURE_CREDENTIALS
+```
+
+GitHub visar inte hemlighetens värde igen. Det är avsiktligt.
+
+### 5. Kontrollera workflowets miljövariabler
+
+Filen `.github/workflows/deploy.yml` ska innehålla den resursgrupp som skickas till `scripts/deploy-infra.sh`:
+
+```yaml
+env:
+  AZURE_RESOURCE_GROUP: rg-clo25-steven
+  AZURE_WEBAPP_NAME: app-clo25-steven
+  AZURE_WEBAPP_HOSTNAME: app-clo25-steven.azurewebsites.net
+  DOTNET_VERSION: '10.0.x'
+```
+
+Inloggningssteget ska använda den samlade hemligheten:
+
+```yaml
+- name: Sign in to Azure
+  uses: azure/login@v3
+  with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
+```
+
+Ange inte samtidigt `client-id`, `tenant-id` eller `subscription-id` när `creds` används, eftersom individuella värden gör att `creds` ignoreras.
+
+### 6. Starta workflowet igen
+
+En ändrad GitHub-secret kräver ingen ny commit:
+
+```bash
+gh workflow run deploy.yml
+```
+
+Följ den senaste körningen:
+
+```bash
+RUN_ID="$(gh run list --workflow deploy.yml --limit 1 \
+  --json databaseId --jq '.[0].databaseId')"
+
+gh run watch "$RUN_ID"
+```
+
+Visa felloggen om körningen fortfarande misslyckas:
+
+```bash
+gh run view "$RUN_ID" --log-failed
+```
+
+### Säkerhet
+
+Filer som `azure-credentials.json` innehåller normalt en `clientSecret`. De får aldrig läggas till med `git add` eller committas. Om credentials redan har committats eller delats ska service principalens lösenord återställas omedelbart och GitHub-hemligheten uppdateras.
+
 
 ## Beslut jag tagit
 
