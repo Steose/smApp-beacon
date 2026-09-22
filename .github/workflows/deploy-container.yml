@@ -1,4 +1,4 @@
-name: Build and deploy the container to Container Apps
+name: Build and push the container image to ACR
 
 on:
   push:
@@ -9,9 +9,8 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_RESOURCE_GROUP: rg-clo25-steven     # <-- byt till DITT
-  ACR_NAME: acrclo25steven                  # <-- byt till DITT
-  CONTAINER_APP_NAME: ca-clo25-steven       # <-- byt till DITT
+  ACR_LOGIN_SERVER: acrclo25steven.azurecr.io   # inte hemligt
+  ACR_USERNAME: acrclo25steven                  # inte hemligt
   IMAGE_NAME: beacon
 
 jobs:
@@ -29,46 +28,20 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release
 
-      - name: Sign in to Azure
-        uses: azure/login@v3
+      - name: Sign in to the registry
+        uses: docker/login-action@v4
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          registry: ${{ env.ACR_LOGIN_SERVER }}
+          username: ${{ env.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build and push the image in ACR
+      - name: Build and push the image
         run: |
-          az acr build \
-            --registry "${{ env.ACR_NAME }}" \
-            --image "${{ env.IMAGE_NAME }}:${{ github.sha }}" \
-            --image "${{ env.IMAGE_NAME }}:latest" \
-            --file src/Beacon.Api/Dockerfile \
-            .
+          IMAGE="${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}"
+          docker build -f src/Beacon.Api/Dockerfile -t "$IMAGE:${{ github.sha }}" \
+            -t "$IMAGE:latest" .
+          docker push "$IMAGE:${{ github.sha }}"
+          docker push "$IMAGE:latest"
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the code
-        uses: actions/checkout@v7
-
-      - name: Sign in to Azure
-        uses: azure/login@v3
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Roll out a new revision
-        run: |
-          IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}"
-          az containerapp update \
-            --name "${{ env.CONTAINER_APP_NAME }}" \
-            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
-            --image "$IMAGE:${{ github.sha }}"
-
-      - name: Health check after deployment
-        run: |
-          FQDN=$(az containerapp show \
-            --name "${{ env.CONTAINER_APP_NAME }}" \
-            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
-            --query properties.configuration.ingress.fqdn \
-            --output tsv)
-          chmod +x ./scripts/health-check.sh
-          ./scripts/health-check.sh "https://$FQDN/health"
+      - name: Print the tag to roll out
+        run: echo "Roll out with tag ${{ github.sha }}"
