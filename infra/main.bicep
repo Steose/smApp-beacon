@@ -29,6 +29,9 @@ var healthCheckPath = '/health'
 resource plan 'Microsoft.Web/serverfarms@2025-03-01' = {
   name: planName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   kind: 'linux' // what --is-linux made the plan in week 35
   sku: {
     name: skuName
