@@ -21,6 +21,14 @@ app.MapGet("/info", () => new
     machine = Environment.MachineName
 });
 
+// Probe for the scaling experiment in week 39. Remove afterwards.
+var visits = 0;
+app.MapGet("/visits", () =>
+{
+    visits++;
+    return new { visits, machine = Environment.MachineName };
+});
+
 app.Run();
 
 // Makes Program visible to the test project.
