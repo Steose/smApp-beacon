@@ -101,7 +101,29 @@ curl -s -o /dev/null -w "%{http_code}\n" \
 
 Svar: ```200```
 
-### Skala Ut Och Verifiera  
+### Skala Ut Och Verifiera 
+
+```bash
+for i in $(seq 1 10); do
+  curl --silent https://app-clo25-steven.azurewebsites.net/visits
+  echo
+done
+```
+
+```bash
+{"visits":1,"machine":"186d7fa1abd1"}
+{"visits":1,"machine":"80c1f4bbd7d1"}
+{"visits":2,"machine":"80c1f4bbd7d1"}
+{"visits":1,"machine":"11534e66dbda"}
+{"visits":2,"machine":"186d7fa1abd1"}
+{"visits":3,"machine":"186d7fa1abd1"}
+{"visits":3,"machine":"80c1f4bbd7d1"}
+{"visits":4,"machine":"186d7fa1abd1"}
+{"visits":5,"machine":"186d7fa1abd1"}
+{"visits":2,"machine":"11534e66dbda"}
+```
+
+Putting a counter in the application code does not maintain a consistent count across different instances of the application, as each instance has its own separate counter and it means that the App does not keep any state in memory. This is evident from the varying visit counts returned by different machines, indicating that the state is not shared between them.
 
 ### 1. Läs av planen
 
