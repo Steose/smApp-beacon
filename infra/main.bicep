@@ -29,9 +29,6 @@ var healthCheckPath = '/health'
 resource plan 'Microsoft.Web/serverfarms@2025-03-01' = {
   name: planName
   location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
   kind: 'linux' // what --is-linux made the plan in week 35
   sku: {
     name: skuName
@@ -45,6 +42,11 @@ resource plan 'Microsoft.Web/serverfarms@2025-03-01' = {
 resource app 'Microsoft.Web/sites@2025-03-01' = {
   name: appName
   location: location
+  identity: {
+
+    type: 'SystemAssigned'
+
+  }
   kind: 'app,linux' // exactly the "kind" you read off in step 1
   properties: {
     serverFarmId: plan.id
