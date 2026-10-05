@@ -8,6 +8,11 @@ on:
       - '**.md'
   workflow_dispatch:
 
+# New: lets every job ask GitHub for an OIDC token
+permissions:
+  id-token: write
+  contents: read
+
 env:
   ACR_LOGIN_SERVER: acrclo25steven.azurecr.io   # inte hemligt
   ACR_USERNAME: acrclo25steven                  # inte hemligt
