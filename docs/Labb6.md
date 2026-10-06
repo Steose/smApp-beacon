@@ -502,9 +502,6 @@ The password secret and `acr.listCredentials()` usage can then be removed. This 
 
 Revert this experiment before teardown unless the role can be recreated automatically. The registry and its role assignment disappear with the resource group; leaving the template dependent on `AcrPull` can break the required container deployment after the next rebuild.
 
-## Inputs required for VG
-
-Add a security section to `TUTORIAL.md` using these six headings. Under each heading, include both the design and the evidence you observed.
 
 ### 1. Where my secrets are and what they are
 
@@ -545,7 +542,7 @@ Record one of these outcomes:
 
 ### 5. Remaining limitations and next steps
 
-Record at least these known limitations:
+Limitations:
 
 - `MY_SECRET` was set through Azure CLI and is lost when the app is recreated
 - declaring a partial `appSettings` list in Bicep can overwrite existing settings
@@ -554,7 +551,7 @@ Record at least these known limitations:
 - `security.bicep` is not currently part of `provision-all.sh`
 - any remaining registry password could be replaced with managed identity and `AcrPull`
 
-This section is especially important for VG because it shows conscious trade-offs rather than presenting the solution as perfect.
+This section is especially important because it shows conscious trade-offs rather than presenting the solution as perfect.
 
 ### 6. Transport security and Infrastructure as Code
 
@@ -579,7 +576,7 @@ The lab is complete when:
 - `/health` still returns `200`
 - the secret never appeared on a command line
 - OIDC either works in both pipelines or its permission barrier and intended solution are documented
-- the six VG security headings contain concrete evidence and justified trade-offs
+- the security headings contain concrete evidence and justified trade-offs
 
 ## Cleanup
 
@@ -609,4 +606,4 @@ Expected result: `Deleting` or `Gone`.
 
 The managed identities and resource-group-scoped role assignments disappear with their resources. An Entra app registration and federated credential survive because they live outside the resource group, but the Contributor assignment must be recreated after the next rebuild.
 
-The manually configured `MY_SECRET` setting does not return when the web app is recreated. Keep this as an explicit limitation in the VG documentation rather than hiding it.
+The manually configured `MY_SECRET` setting does not return when the web app is recreated.
