@@ -467,14 +467,14 @@ No output is expected.
 
 ### 11. Document the permission barrier if OIDC is blocked
 
-OIDC implementation is optional when tenant permissions prevent it. The VG requirement is still reachable if the security design and limitation are explained accurately.
+OIDC implementation is optional when tenant permissions prevent it.
 
-Record which barrier occurred:
+Which barrier occurred:
 
 - app registration creation failed: you may not create Entra applications
 - role assignment failed with `AuthorizationFailed`: the identity exists but cannot receive permission on the resource group
 
-Then document the intended solution:
+The intended solution:
 
 > The pipeline currently uses `AZURE_CREDENTIALS`, which contains a service principal password stored as a GitHub secret. OIDC could not be configured because **[exact permission restriction]**. With the required permission, I would create a federated credential restricted to this repository and the `main` branch, then assign Contributor only on the lab resource group. The pipeline would receive a short-lived token per run, so no Azure password would be stored in GitHub.
 
@@ -505,16 +505,12 @@ Revert this experiment before teardown unless the role can be recreated automati
 
 ### 1. Where my secrets are and what they are
 
-Record:
-
 - the Key Vault secret’s purpose, without revealing its value
 - whether `AZURE_CREDENTIALS` still exists
 - whether the registry administrator key is still used
 - confirmation that no real secret is committed to Git
 
 ### 2. How secrets are managed
-
-Record:
 
 - `read -rs` kept the value off the screen and command history
 - `readEnvironmentVariable` kept it out of the parameter file
@@ -525,8 +521,6 @@ Record:
 
 ### 3. Permission model and least privilege
 
-Record:
-
 - why access policies were chosen instead of RBAC
 - the web app identity receives only `get` and `list`
 - the deployer receives `get`, `list` and `set`
@@ -535,7 +529,7 @@ Record:
 
 ### 4. Pipeline authentication
 
-Record one of these outcomes:
+Outcomes:
 
 - **OIDC completed:** federated identity, repository/branch restriction, GitHub variables, successful OIDC login evidence and the plan for deleting `AZURE_CREDENTIALS` only after a teardown test
 - **OIDC blocked:** exact command, exact permission error, what the restriction blocks and the federated design that would replace the stored password
@@ -555,7 +549,7 @@ This section is especially important because it shows conscious trade-offs rathe
 
 ### 6. Transport security and Infrastructure as Code
 
-Point to the relevant declarations:
+Relevant declarations:
 
 - `httpsOnly` in the App Service template redirects or rejects insecure access
 - `minTlsVersion` rejects older TLS versions
