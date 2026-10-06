@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 infra/*.json
 publish-profile.xml
 *.publishsettings
+
+# Local Azure credentials
+azure-credentials.json
