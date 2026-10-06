@@ -505,26 +505,22 @@ Revert this experiment before teardown unless the role can be recreated automati
 
 ### 1. Where my secrets are and what they are
 
-- the Key Vault secret’s purpose, without revealing its value
-- whether `AZURE_CREDENTIALS` still exists
-- whether the registry administrator key is still used
-- confirmation that no real secret is committed to Git
+- Key Vault. The application secret is stored in Azure Key Vault and is used by the web app at runtime. Its value is never displayed or stored in the source code.
+- `AZURE_CREDENTIALS` still exists as a GitHub secret until OIDC has been fully verified. The ACR administrator key is still used for registry login. No real secrets are committed to Git.
 
 ### 2. How secrets are managed
 
 - `read -rs` kept the value off the screen and command history
 - `readEnvironmentVariable` kept it out of the parameter file
 - `@secure()` kept it out of deployment history
-- `MY_SECRET` contains a Key Vault reference rather than the value
-- application code reads an environment variable and remains unaware of Key Vault
-- the configuration-reference status was `Resolved`
+- `MY_SECRET` contains only a Key Vault reference. The application reads it as a normal environment variable without needing Key Vault-specific code. The `Resolved` status confirms that App Service successfully retrieved the secret.
 
 ### 3. Permission model and least privilege
 
-- why access policies were chosen instead of RBAC
-- the web app identity receives only `get` and `list`
-- the deployer receives `get`, `list` and `set`
-- why Contributor or AcrPull is scoped to one resource group or registry instead of the subscription
+- why access policies were chosen instead of RBAC. Access policies were used because they only require Contributor access. RBAC is preferred, but it requires permission to create role assignments.
+- the web app identity receives only `get` and `list`. The web app only receives get and list because it only needs to read secrets.
+- the deployer receives `get`, `list` and `set`. The deployer also receives set to create and update them
+- why Contributor or AcrPull is scoped to one resource group or registry instead of the subscription. Contributor is limited to the resource group, and AcrPull to the registry. This prevents identities from accessing unrelated resources in the subscription and follows the principle of least privilege.
 - RBAC as the preferred alternative when role-assignment permission is available
 
 ### 4. Pipeline authentication
@@ -559,7 +555,7 @@ Relevant declarations:
 
 ## Verification
 
-The lab is complete when:
+The App is complete when:
 
 - the web app has a system-assigned identity
 - `infra/security.bicep` and `infra/security.bicepparam` are committed
