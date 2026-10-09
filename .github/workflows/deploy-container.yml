@@ -15,7 +15,7 @@ permissions:
 
 env:
   ACR_LOGIN_SERVER: acrclo25steve.azurecr.io   # inte hemligt
-  ACR_USERNAME: acrclo25steven                  # inte hemligt
+  ACR_USERNAME: acrclo25steve                  # inte hemligt
   IMAGE_NAME: beacon
 
 jobs:
