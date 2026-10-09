@@ -4,8 +4,6 @@
 
 I den här tutorialen återskapar du Beacon i Azure, gör en manuell deployment och förbereder GitHub för framtida deployment via GitHub Actions. När du är klar finns en fungerande webbapp och en skyddad publish profile i GitHub Secrets.
 
-> **Avgränsning:** Den tillgängliga `Labb3.txt` slutar efter att publish-profilen har lagts in som en GitHub-hemlighet. Den innehåller inte själva workflow-filen eller implementationen av health check-skriptet.
-
 ## Förkunskaper
 
 Du behöver:

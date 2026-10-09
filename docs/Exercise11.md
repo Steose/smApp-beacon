@@ -473,6 +473,13 @@ Estimate these costs even if the calculator shows little or no Azure charge:
 | Cold start | Can the first caller tolerate additional latency? |
 | Complexity | Can the team explain, test and maintain triggers, bindings and a second deployment lifecycle? |
 
+**Mina svar:**
+
+- **Infrastructure – How much extra Bicep, storage and pipeline work is required?** Jag behöver en separat Function App, en Flex Consumption-plan, ett lagringskonto och en blobcontainer för deploymentpaketet. Jag valde att beskriva dem i Bicep, men valde bort att lägga till dem i Beacons ordinarie drift eftersom det skulle skapa mer infrastruktur och ännu ett deploymentflöde för en liten app.
+- **Documentation – What must be added so another developer can operate the Function?** Dokumentationen måste beskriva lokal körning med Functions Core Tools, publicering, Function-routen, lagringsberoendet och hur Flex Consumption konfigureras. Jag valde att behålla dessa instruktioner i övningen i stället för att göra dem till en permanent del av Beacons vanliga driftmanual.
+- **Cold start – Can the first caller tolerate additional latency?** En schemalagd bakgrundskontroll kan tåla viss startfördröjning, men Beacons publika `/health`-endpoint bör svara direkt. Jag valde därför bort Function för den användarnära hälsokontrollen.
+- **Complexity – Can the team explain, test and maintain triggers, bindings and a second deployment lifecycle?** Lösningen är tekniskt hanterbar, men den innebär två körmodeller och två deploymentlivscykler. För dagens begränsade Beacon-funktionalitet väger den extra komplexiteten tyngre än nyttan.
+
 Use evidence from the exercise: the four-resource Bicep template shows the infrastructure overhead, and the first-versus-second request timings provide cold-start evidence when observed.
 
 ### 9. Write the VG decision in `TUTORIAL.md`
@@ -480,6 +487,10 @@ Use evidence from the exercise: the four-resource Bicep template shows the infra
 Add a section titled **Alternatives considered – Azure Functions**. Use this structure:
 
 > I considered moving **[specific task]** to an Azure Function with a **[queue/timer/HTTP] trigger**, because **[expected technical benefit]**. I chose to **[build/not build]** it because **[runtime evidence, calculated workload and operational trade-off]**. At **[specific workload, latency requirement or operational threshold]**, the opposite choice would be preferable because **[reason]**.
+
+**Mitt svar:** Jag övervägde att flytta en återkommande kontroll av Beacons `/health`-endpoint till en Azure Function med timer-trigger. Jag räknade med en körning var femte minut, alltså cirka 8 640 körningar per månad. Med 2 GB minne och 0,5 sekunders genomsnittlig körning motsvarar det cirka 8 640 GB-sekunder per månad. Med övningens angivna fria nivå på 250 000 körningar och 100 000 GB-sekunder blir den beräknade exekveringskostnaden 0 kr, före eventuella kostnader för lagring och nätverk.
+
+Jag valde ändå att inte införa Function-lösningen i Beacons ordinarie arkitektur. App Service har redan en plattformsbaserad health check, medan en Function skulle kräva ett extra lagringskonto, mer Bicep, separat publicering och ytterligare dokumentation. Jag valde alltså bort den billigare serverless-körningen eftersom den inte ersätter tillräckligt mycket av den befintliga lösningen. Om kontrollen i framtiden måste köras oberoende varje minut, motsvarande cirka 43 200 körningar per månad, spara historik eller skicka larm utan koppling till webbappens livscykel, skulle en timerstyrd Function vara det bättre valet. Då motiverar isoleringen och den händelsestyrda skalningen den extra driften.
 
 A strong VG paragraph must include:
 
