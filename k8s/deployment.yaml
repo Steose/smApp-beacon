@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: beacon
-          image: beacon:v1
+          image: beacon:v2
           ports:
             - containerPort: 8080
           resources:
