@@ -14,9 +14,14 @@ spec:
     spec:
       containers:
         - name: beacon
-          image: beacon:v2
+          image: beacon:v3
           ports:
             - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: beacon-config
+            - secretRef:
+                name: beacon-secret
           resources:
             requests:
               cpu: 100m

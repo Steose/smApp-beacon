@@ -7,7 +7,7 @@ app.MapGet("/", () => new
 {
     app = "Beacon",
     status = "ok",
-    version = "2"
+    version = "3"
 });
 
 // Health check. Used by App Service (week 35), by health-check.sh (week 36)
@@ -21,7 +21,10 @@ app.MapGet("/health", () => Results.Ok(new
 app.MapGet("/info", () => new
 {
     app = "Beacon",
-    machine = Environment.MachineName
+    machine = Environment.MachineName,
+    environment = Environment.GetEnvironmentVariable("BEACON_ENVIRONMENT") ?? "unset",
+    message = Environment.GetEnvironmentVariable("BEACON_MESSAGE") ?? "unset",
+    apiKeySet = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BEACON_API_KEY"))
 });
 
 app.Run();

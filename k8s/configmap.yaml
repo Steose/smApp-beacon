@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beacon-config
+data:
+  BEACON_ENVIRONMENT: "local"
+  BEACON_MESSAGE: "Hello again"
