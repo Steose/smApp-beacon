@@ -1,9 +1,9 @@
 name: Build and deploy to App Service
 
 on:
-  push:
-    branches:
-      - main
+  #push:
+    #branches:
+    #  - main
     paths-ignore:
       - '**.md'
   workflow_dispatch:
