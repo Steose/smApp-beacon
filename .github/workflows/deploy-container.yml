@@ -1,7 +1,7 @@
 name: Build and push the container image to ACR
-
-on:
-  #push:
+on: 
+  # To stop old workflow from running, we comment out the push trigger. It can be re-enabled later if needed.
+  #push: 
     #branches:
      # - main
     paths-ignore:
