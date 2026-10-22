@@ -2,9 +2,9 @@ name: Build and deploy to App Service
 
 on:
   # To stop old workflow from running, we comment out the push trigger. It can be re-enabled later if needed.
-  #push:
-    #branches:
-    #  - main
+  push:
+    branches:
+      - main
     paths-ignore:
       - '**.md'
   workflow_dispatch:
