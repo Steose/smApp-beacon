@@ -12,9 +12,11 @@ spec:
       labels:
         app: beacon
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: beacon
-          image: beacon:v3
+          image: ghcr.io/steose/beacon:1f4510f
           ports:
             - containerPort: 8080
           envFrom:
