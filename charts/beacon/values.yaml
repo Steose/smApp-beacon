@@ -1,0 +1,4 @@
+replicaCount: 3
+imageTag: "a7283ec"
+ingressHost: ""
+

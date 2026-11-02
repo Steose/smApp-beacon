@@ -1,0 +1,6 @@
+apiVersion: v2
+name: beacon
+description: Beacon, a small web API, on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "4"
