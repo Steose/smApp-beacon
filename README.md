@@ -1,6 +1,6 @@
 # Beacon
 
-En liten webbapp som byggs vidare på under kursen Skalbara molnapplikationer.
+En liten webbapp som byggs vidare på under kursen Skalbara molnapplikationer och Kubernetes.
 
 Full dokumentation: [`docs/TUTORIAL.md`](./docs/TUTORIAL.md)
 
