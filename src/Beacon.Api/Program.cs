@@ -7,7 +7,7 @@ app.MapGet("/", () => new
 {
     app = "Beacon",
     status = "ok",
-    version = "4"
+    version = "5"
 });
 
 // Health check. Used by App Service (week 35), by health-check.sh (week 36)
