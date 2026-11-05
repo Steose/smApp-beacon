@@ -4,7 +4,7 @@ En liten webbapp som byggs vidare på under kursen Skalbara molnapplikationer.
 
 Full dokumentation: [`docs/TUTORIAL.md`](./docs/TUTORIAL.md)
 
-## Architecture
+## Kubernetes Architecture
 
 Beacon runs as three Pods managed by a Kubernetes Deployment. A Service gives those replaceable Pods one stable address, while an Ingress describes how HTTP traffic should reach that Service.
 
