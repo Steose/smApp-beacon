@@ -30,3 +30,7 @@ Full dokumentation: [`docs/TUTORIAL.md`](./docs/TUTORIAL.md)
    ```bash
    helm upgrade --install beacon ./charts/beacon
    ```
+
+## AKS and Pipeline
+
+A green run of the pipeline: [Release version 5](https://github.com/Steose/smApp-beacon/actions/runs/41999808984)
