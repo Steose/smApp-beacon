@@ -8,9 +8,10 @@ Full dokumentation: [`docs/TUTORIAL.md`](./docs/TUTORIAL.md)
 
 Beacon runs as three Pods managed by a Kubernetes Deployment. A Service gives those replaceable Pods one stable address, while an Ingress describes how HTTP traffic should reach that Service.
 
-![Kubernetes control-plane architecture](./docs/kubernetes-Doc.png)
+![Kubernetes control-plane architecture](./docs/kubernetes-Doc.png)  
+Source: Kubernetes documentation - Concepts Cluster Architecture
 
-![Beacon Kubernetes architecture](./docs/kubernetes-cluster.png)
+![Beacon Kubernetes architecture](./docs/kubernetes-cluster.png) Beacon architecture - AI assisted.
 
 The **API server** is the front door of the control plane. `kubectl`, Helm, controllers, and kubelets communicate with Kubernetes through it. It authenticates and validates requests and records the desired state of resources.
 
